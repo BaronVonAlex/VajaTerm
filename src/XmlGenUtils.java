@@ -17,7 +17,7 @@ import java.io.IOException;
 public class XmlGenUtils {
     public XmlGenUtils() {}
 
-    public static String createXML() throws ParserConfigurationException, TransformerException{
+    public static void createXML() throws ParserConfigurationException, TransformerException{
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Document document = documentBuilder.newDocument();
@@ -56,15 +56,18 @@ public class XmlGenUtils {
         StreamResult streamResult = new StreamResult(new File("D:\\CodingApps\\JVM Studies\\JavaMidtermPractice\\src\\Departments\\Departments.xml"));
 
         transformer.transform(domSource, streamResult);
-        return null;
     }
     public static void parseXML() throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Document document = documentBuilder.parse(new File("D:\\CodingApps\\JVM Studies\\JavaMidtermPractice\\src\\Departments\\Departments.xml"));
         document.getDocumentElement().normalize();
-        NodeList nodeList = document.getElementsByTagName("Department");
-        System.out.println(nodeList.item(0).getAttributes().item(0).getTextContent());
-        System.out.println(nodeList.item(0).getTextContent());
+        NodeList nodeList = document.getElementsByTagName("department");
+        Element departmentElement = (Element) nodeList.item(0);
+        Element nameElement = (Element) departmentElement.getElementsByTagName("name").item(0);
+        Element emailElement = (Element) departmentElement.getElementsByTagName("email").item(0);
+
+        System.out.println(nameElement.getTextContent());
+        System.out.println(emailElement.getTextContent());
     }
 }

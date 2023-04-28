@@ -1,9 +1,12 @@
+import org.xml.sax.SAXException;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import java.io.IOException;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws ParserConfigurationException, TransformerException {
+    public static void main(String[] args) throws ParserConfigurationException, TransformerException, IOException, SAXException {
 
         Scanner input = new Scanner(System.in);
         System.out.print("Enter the size of the array: ");
@@ -18,8 +21,8 @@ public class Main {
         System.out.println("Numbers above 150 : " + numsAbove150);
         System.out.println("Average of numbers above 150: " + avg);
 
-        String xmlString = XmlGenUtils.createXML();
-        System.out.println(xmlString);
+        XmlGenUtils.createXML();
+        XmlGenUtils.parseXML();
     }
 
     public static double calculateAverageAbove150(int[] arr, List<Integer>above150) {
