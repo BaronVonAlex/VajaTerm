@@ -1,0 +1,213 @@
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws ParserConfigurationException, TransformerException, IOException, SAXException {
+
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter the size of the array: ");
+        int size = input.nextInt();
+        int[] arrayOfNums = generateRandomArray(size);
+        double geoMean = geometricMeanOfOddNumbers(arrayOfNums);
+        List<Integer> numsAbove150 = new ArrayList<>();
+        double avg = calculateAverageAbove150(arrayOfNums, numsAbove150);
+
+        System.out.println("Randomly generated array: " + Arrays.toString(arrayOfNums));
+        System.out.println("Geometric mean of odd numbers: " + geoMean);
+        System.out.println("Numbers above 150 : " + numsAbove150);
+        System.out.println("Average of numbers above 150: " + avg);
+
+        XmlGenUtils.createXML();
+        XmlGenUtils.parseXML();
+    }
+
+    public static double calculateAverageAbove150(int[] arr, List<Integer>above150) {
+        double sum = 0;
+        int count = 0;
+        for (int num : arr) {
+            if (num > 150) {
+                above150.add(num);
+                sum += num;
+                count++;
+            }
+        }
+        if (count == 0) {
+            return 0;
+        }
+        return sum / count;
+    }
+
+    public static int[] generateRandomArray(int size) {
+        Random rand = new Random();
+        int[] arr = new int[size];
+        for (int i = 0; i < size; i++) {
+            arr[i] = rand.nextInt(500) + 1;
+        }
+        return arr;
+    }
+
+    public static double geometricMeanOfOddNumbers(int[] arr) {
+        int count = 0;
+        double product = 1;
+        for (int j : arr) {
+            if (j % 2 == 1) {
+                product *= j;
+                count++;
+            }
+        }
+        if (count == 0) {
+            return 0;
+        } else {
+            return Math.pow(product, 1.0 / count);
+        }
+    }
+}
+
+######### MAIN
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.io.IOException;
+
+public class XmlGenUtils {
+    public XmlGenUtils() {}
+
+    public static void createXML() throws ParserConfigurationException, TransformerException{
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        Document document = documentBuilder.newDocument();
+
+        Element rootElement = document.createElement("departments");
+        document.appendChild(rootElement);
+
+        Element DepartmentElement = document.createElement("department");
+        rootElement.appendChild(DepartmentElement);
+
+        Element nameElement = document.createElement("name");
+        nameElement.appendChild(document.createTextNode("HR"));
+        DepartmentElement.appendChild(nameElement);
+
+        Element emailElement = document.createElement("email");
+        emailElement.appendChild(document.createTextNode("hr@oracle.com"));
+        DepartmentElement.appendChild(emailElement);
+
+        Element DepartmentElement2 = document.createElement("department");
+        rootElement.appendChild(DepartmentElement2);
+
+        Element nameElement2 = document.createElement("firstname");
+        nameElement2.appendChild(document.createTextNode("IT"));
+        DepartmentElement2.appendChild(nameElement2);
+
+        Element emailElement2 = document.createElement("email");
+        emailElement2.appendChild(document.createTextNode("it@java.com"));
+        DepartmentElement2.appendChild(emailElement2);
+
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+
+        DOMSource domSource = new DOMSource(document);
+
+        StreamResult streamResult = new StreamResult(new File("D:\\CodingApps\\JVM Studies\\JavaMidtermPractice\\src\\Departments\\Departments.xml"));
+
+        transformer.transform(domSource, streamResult);
+    }
+    public static void parseXML() throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        Document document = documentBuilder.parse(new File("D:\\CodingApps\\JVM Studies\\JavaMidtermPractice\\src\\Departments\\Departments.xml"));
+        document.getDocumentElement().normalize();
+        NodeList nodeList = document.getElementsByTagName("department");
+        Element departmentElement = (Element) nodeList.item(0);
+        Element nameElement = (Element) departmentElement.getElementsByTagName("name").item(0);
+        Element emailElement = (Element) departmentElement.getElementsByTagName("email").item(0);
+
+        System.out.println(nameElement.getTextContent());
+        System.out.println(emailElement.getTextContent());
+    }
+}
+
+####### XML
+
+package Departments;
+
+import java.util.Objects;
+
+public class Department{
+    private String name;
+    private int totalEmployees;
+    private String language;
+
+    public Department(String name, int totalEmployees, String language){
+        this.name = name;
+        this.totalEmployees = totalEmployees;
+        this.language = language;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public int getTotalEmployees() {
+        return totalEmployees;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    @Override
+    public String toString() {
+        return "Departments.Department{" + "\n" + " name: " + name
+                + "\n" + " Amount of Employees: " + totalEmployees
+                + "\n" + " Coding Language: " + language + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Department that = (Department) o;
+        return totalEmployees == that.totalEmployees &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(language, that.language);
+    }
+}
+
+####### DEPARTMENTS
+
+package Departments;
+
+public class DepartmentCheck {
+    public static void main(String[] args) {
+
+        Department d1 = new Department("Mihoyo", 50, "Java");
+        Department d2 = new Department("Kixeye", 45, "Kotlin");
+        Department d3 = new Department("EA", 20, "Python");
+
+        System.out.println(d1);
+        System.out.println(d2);
+        System.out.println(d3);
+
+        System.out.println("Dep1 = Dep2 Check : " + d1.equals(d2));
+        System.out.println("Dep2 = Dep3 Check : " + d2.equals(d3));
+        // if any of these departments are the same, this will print True.
+    }
+}
+
+#### DEPARTMENTS CHECKS
